@@ -31,6 +31,8 @@ class AjusteNotaGO(BaseEstimator, TransformerMixin):
         data = X.copy()
         #Ajusta a NOTA DE GO com a média da linha
         data['NOTA_GO'].fillna(round(data[['NOTA_DE', 'NOTA_MF', 'NOTA_EM']].mean(axis=1)), inplace = True)
+        #Agora preenche os nulos com zero
+        data.fillna(value=0, inplace=True)
         # Retornamos um novo dataframe
         return data
     
