@@ -45,7 +45,7 @@ class Custom_Autobots(BaseEstimator, TransformerMixin):
     def __init__(self):
         pass
 
-    def fit(self, X, y=None):
+    def fit(self, X, y):
         return self
     
     # Metodo para remover os outliers com base em IQR, mas permite ajustar o RANGE para realizar um corte diferente para cada disciplina
@@ -58,21 +58,37 @@ class Custom_Autobots(BaseEstimator, TransformerMixin):
         df_out = df_in.loc[(df_in[col_name] > fence_low) & (df_in[col_name] < fence_high)]
         return df_out
 
-    def transform( self, X, y=None):
+    def transform( self, X, y):
         # Primeiro realizamos a cópia do dataframe 'X' de entrada
         data = X.copy()
+        data2 = y.copy()
 
         # ALTERAR OS VALORES 0 DAS NOTAS PELA MEDIA
         data.loc[ (data.NOTA_DE == 0), 'NOTA_DE' ] = X['NOTA_DE'].mean()
         data.loc[ (data.NOTA_EM == 0), 'NOTA_EM' ] = X['NOTA_EM'].mean()
         data.loc[ (data.NOTA_MF == 0), 'NOTA_MF' ] = X['NOTA_MF'].mean()
         data.loc[ (data.NOTA_GO == 0), 'NOTA_GO' ] = X['NOTA_GO'].mean()
-        
+                
         # Remove os outliers
         data = Custom_Autobots.remove_outlier(data,"NOTA_DE", 0.4, 0.75)
         data = Custom_Autobots.remove_outlier(data,"NOTA_EM", 0.4, 0.75)
         data = Custom_Autobots.remove_outlier(data,"NOTA_MF", 0.25, 0.7)
         data = Custom_Autobots.remove_outlier(data,"NOTA_GO", 0.35, 0.65)
+        
+        data2 = Custom_Autobots.remove_outlier(data2,"NOTA_DE", 0.4, 0.75)
+        data2 = Custom_Autobots.remove_outlier(data2,"NOTA_EM", 0.4, 0.75)
+        data2 = Custom_Autobots.remove_outlier(data2,"NOTA_MF", 0.25, 0.7)
+        data2 = Custom_Autobots.remove_outlier(data2,"NOTA_GO", 0.35, 0.65)
+
 
         # Retornamos um novo dataframe lindão
-        return data
+        return data, data2
+    
+    class SmoteResample(object):
+    def __init__(self):
+        pass
+
+    def fit(self, X, y):
+        X_resampled, y_resampled = SMOTE().fit_resample(X, y)
+        X_resampled = pd.DataFrame(X_resampled, columns=X.columns)
+        return X_resampled, y_resampled
