@@ -47,7 +47,7 @@ class Custom_Autobots(BaseEstimator, TransformerMixin):
     def __init__(self):
         pass
 
-    def fit(self, X, y):
+    def fit(self, X, y=None):
         return self
     
     # Metodo para remover os outliers com base em IQR, mas permite ajustar o RANGE para realizar um corte diferente para cada disciplina
@@ -60,10 +60,10 @@ class Custom_Autobots(BaseEstimator, TransformerMixin):
         df_out = df_in.loc[(df_in[col_name] > fence_low) & (df_in[col_name] < fence_high)]
         return df_out
 
-    def transform( self, X, y):
+    def transform( self, X, y=None):
         # Primeiro realizamos a cópia do dataframe 'X' de entrada
         data = X.copy()
-        data2 = y.copy()
+        #data2 = y.copy()
 
         # ALTERAR OS VALORES 0 DAS NOTAS PELA MEDIA
         data.loc[ (data.NOTA_DE == 0), 'NOTA_DE' ] = X['NOTA_DE'].mean()
@@ -72,27 +72,17 @@ class Custom_Autobots(BaseEstimator, TransformerMixin):
         data.loc[ (data.NOTA_GO == 0), 'NOTA_GO' ] = X['NOTA_GO'].mean()
                 
         # Remove os outliers
-        data = Custom_Autobots.remove_outlier(data,"NOTA_DE", 0.4, 0.75)
-        data = Custom_Autobots.remove_outlier(data,"NOTA_EM", 0.4, 0.75)
-        data = Custom_Autobots.remove_outlier(data,"NOTA_MF", 0.25, 0.7)
-        data = Custom_Autobots.remove_outlier(data,"NOTA_GO", 0.35, 0.65)
+        #data = Custom_Autobots.remove_outlier(data,"NOTA_DE", 0.4, 0.75)
+        #data = Custom_Autobots.remove_outlier(data,"NOTA_EM", 0.4, 0.75)
+        #data = Custom_Autobots.remove_outlier(data,"NOTA_MF", 0.25, 0.7)
+        #data = Custom_Autobots.remove_outlier(data,"NOTA_GO", 0.35, 0.65)
         
-        data2 = Custom_Autobots.remove_outlier(data2,"NOTA_DE", 0.4, 0.75)
-        data2 = Custom_Autobots.remove_outlier(data2,"NOTA_EM", 0.4, 0.75)
-        data2 = Custom_Autobots.remove_outlier(data2,"NOTA_MF", 0.25, 0.7)
-        data2 = Custom_Autobots.remove_outlier(data2,"NOTA_GO", 0.35, 0.65)
+        #data2 = Custom_Autobots.remove_outlier(data2,"NOTA_DE", 0.4, 0.75)
+        #data2 = Custom_Autobots.remove_outlier(data2,"NOTA_EM", 0.4, 0.75)
+        #data2 = Custom_Autobots.remove_outlier(data2,"NOTA_MF", 0.25, 0.7)
+        #data2 = Custom_Autobots.remove_outlier(data2,"NOTA_GO", 0.35, 0.65)
 
 
         # Retornamos um novo dataframe lindão
-        return data, data2
+        return data
    
-# CUSTOM CODE - TALOPES
-# CRIA A CLASSE PARA O SMOTE
-class SmoteResample(object):
-    def __init__(self):
-        pass
-
-    def fit(self, X, y):
-        X_resampled, y_resampled = SMOTE().fit_resample(X, y)
-        X_resampled = pd.DataFrame(X_resampled, columns=X.columns)
-        return X_resampled, y_resampled
