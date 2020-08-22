@@ -1,5 +1,7 @@
 from sklearn.base import BaseEstimator, TransformerMixin
-
+import imblearn
+from imblearn.over_sampling import SMOTE
+import pandas as pd
 
 # All sklearn Transforms must have the `transform` and `fit` methods
 class DropColumns(BaseEstimator, TransformerMixin):
@@ -83,8 +85,10 @@ class Custom_Autobots(BaseEstimator, TransformerMixin):
 
         # Retornamos um novo dataframe lindão
         return data, data2
-    
-    class SmoteResample(object):
+   
+# CUSTOM CODE - TALOPES
+# CRIA A CLASSE PARA O SMOTE
+class SmoteResample(object):
     def __init__(self):
         pass
 
