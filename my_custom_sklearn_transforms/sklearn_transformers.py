@@ -1,7 +1,4 @@
 from sklearn.base import BaseEstimator, TransformerMixin
-import imblearn
-from imblearn.over_sampling import SMOTE
-import pandas as pd
 
 # All sklearn Transforms must have the `transform` and `fit` methods
 class DropColumns(BaseEstimator, TransformerMixin):
@@ -38,7 +35,12 @@ class AjusteNotaGO(BaseEstimator, TransformerMixin):
         # Retornamos um novo dataframe
         return data
     
-# CUSTOM CODE - TALOPES
+#CUSTOM CODE - TALOPES
+#Transformação 3: 
+#A transformação 3 é um código customizado para:
+#1-Preencher com a média (MEAN) os valores zero das notas
+#2-Remover os outliers com base em IQR, mas com entradas customizadas - DESISTI DE USAR ESSE E MELHOREI OS PARAMETROS DO BOOST
+
 # CRIA A CLASSE DAS TRANSFORMACOES
 from sklearn.base import BaseEstimator, TransformerMixin
 
@@ -51,38 +53,30 @@ class Custom_Autobots(BaseEstimator, TransformerMixin):
         return self
     
     # Metodo para remover os outliers com base em IQR, mas permite ajustar o RANGE para realizar um corte diferente para cada disciplina
-    def remove_outlier(df_in, col_name, q1_p, q2_p):
-        q1 = df_in[col_name].quantile(q1_p)
-        q3 = df_in[col_name].quantile(q2_p)
-        iqr = q3-q1 #Interquartile range
-        fence_low  = q1-1.5*iqr
-        fence_high = q3+1.5*iqr
-        df_out = df_in.loc[(df_in[col_name] > fence_low) & (df_in[col_name] < fence_high)]
-        return df_out
+    #def remove_outlier(df_in, col_name, q1_p, q2_p):
+    #    q1 = df_in[col_name].quantile(q1_p)
+    #    q3 = df_in[col_name].quantile(q2_p)
+    #    iqr = q3-q1 #Interquartile range
+    #    fence_low  = q1-1.5*iqr
+    #    fence_high = q3+1.5*iqr
+    #    df_out = df_in.loc[(df_in[col_name] > fence_low) & (df_in[col_name] < fence_high)]
+    #    return df_out
 
     def transform( self, X, y=None):
         # Primeiro realizamos a cópia do dataframe 'X' de entrada
         data = X.copy()
-        #data2 = y.copy()
 
         # ALTERAR OS VALORES 0 DAS NOTAS PELA MEDIA
         data.loc[ (data.NOTA_DE == 0), 'NOTA_DE' ] = X['NOTA_DE'].mean()
         data.loc[ (data.NOTA_EM == 0), 'NOTA_EM' ] = X['NOTA_EM'].mean()
         data.loc[ (data.NOTA_MF == 0), 'NOTA_MF' ] = X['NOTA_MF'].mean()
         data.loc[ (data.NOTA_GO == 0), 'NOTA_GO' ] = X['NOTA_GO'].mean()
-                
+        
         # Remove os outliers
         #data = Custom_Autobots.remove_outlier(data,"NOTA_DE", 0.4, 0.75)
         #data = Custom_Autobots.remove_outlier(data,"NOTA_EM", 0.4, 0.75)
         #data = Custom_Autobots.remove_outlier(data,"NOTA_MF", 0.25, 0.7)
         #data = Custom_Autobots.remove_outlier(data,"NOTA_GO", 0.35, 0.65)
-        
-        #data2 = Custom_Autobots.remove_outlier(data2,"NOTA_DE", 0.4, 0.75)
-        #data2 = Custom_Autobots.remove_outlier(data2,"NOTA_EM", 0.4, 0.75)
-        #data2 = Custom_Autobots.remove_outlier(data2,"NOTA_MF", 0.25, 0.7)
-        #data2 = Custom_Autobots.remove_outlier(data2,"NOTA_GO", 0.35, 0.65)
-
 
         # Retornamos um novo dataframe lindão
         return data
-   
